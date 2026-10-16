@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT: REDMAGIC 12 // Charly's Ultimate Gaming Rig</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Rajdhani', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        rm: {
+                            red: '#ff0033',
+                            redGlow: 'rgba(255, 0, 51, 0.4)',
+                            darkBg: '#09090b',
+                            cardBg: 'rgba(18, 18, 22, 0.75)',
+                            cyan: '#00f0ff',
+                            neonGreen: '#39ff14'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-red': '0 0 20px rgba(255, 0, 51, 0.5), inset 0 0 10px rgba(255, 0, 51, 0.2)',
+                        'neon-cyan': '0 0 20px rgba(0, 240, 255, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            background-color: #08080a;
+            color: #e2e8f0;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 0, 51, 0.15), transparent 40%),
+                linear-gradient(to bottom, rgba(255,0,51,0.03) 1px, transparent 1px),
+                linear-gradient(to right, rgba(255,0,51,0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        /* Glassmorphism custom design */
+        .rm-card {
+            background: rgba(15, 15, 20, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 0, 51, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .rm-card:hover {
+            border-color: rgba(255, 0, 51, 0.7);
+            box-shadow: 0 0 25px rgba(255, 0, 51, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* Clip path cyberpunk styling */
+        .clip-corner {
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+        }
+
+        .clip-tag {
+            clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        }
+
+        /* Animated Fan Rotation */
+        @keyframes spinFast {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .fan-spinning {
+            animation: spinFast 0.3s linear infinite;
+        }
+
+        .fan-turbo {
+            animation: spinFast 0.08s linear infinite;
+        }
+
+        /* RGB Mode Overlay */
+        .rgb-mode-active {
+            animation: rgbPulse 2s infinite alternate;
+        }
+
+        @keyframes rgbPulse {
+            0% { box-shadow: 0 0 20px rgba(255, 0, 51, 0.6); }
+            50% { box-shadow: 0 0 25px rgba(0, 240, 255, 0.6); }
+            100% { box-shadow: 0 0 25px rgba(57, 255, 20, 0.6); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08080a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff0033;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-rm-red selection:text-white min-h-screen flex flex-col justify-between">
+
+    <!-- TOP HEADER / HUD BAR -->
+    <header class="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-rm-red/40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Logo & Status -->
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-rm-red rounded-full animate-ping"></div>
+                    <span class="font-mono font-bold text-lg tracking-wider text-white">PROJECT:<span class="text-rm-red">REDMAGIC_12</span></span>
+                </div>
+                <span class="hidden md:inline-block clip-tag bg-rm-red/20 text-rm-red text-xs font-mono px-3 py-1 border border-rm-red/50">
+                    STATUS: CHARLY_SPECS_READY
+                </span>
+            </div>
+
+            <!-- Realtime Metrics HUD -->
+            <div class="hidden sm:flex items-center gap-6 font-mono text-xs">
+                <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md">
+                    <i data-lucide="activity" class="w-4 h-4 text-rm-cyan"></i>
+                    <span class="text-slate-400">FPS:</span>
+                    <span id="hudFps" class="text-rm-cyan font-bold text-sm">120</span>
+                </div>
+
+                <div class="flex items-center gap-2 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-md">
+                    <i data-lucide="thermometer" class="w-4 h-4 text-rm-neonGreen"></i>
+                    <span class="text-slate-400">TEMP:</span>
+                    <span id="hudTemp" class="text-rm-neonGreen font-bold text-sm">28°C</span>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-3">
+                <button id="turboBtn" onclick="toggleTurboMode()" class="clip-corner bg-rm-red hover:bg-red-600 text-white font-mono font-bold text-xs sm:text-sm px-4 py-2 flex items-center gap-2 shadow-neon-red transition-all active:scale-95">
+                    <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+                    <span id="turboBtnText">MODO TURBO</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- HERO SECTION -->
+        <section class="relative pt-6 pb-12 overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-rm-red/10 border border-rm-red/40 px-3 py-1 rounded-full text-rm-red text-xs font-mono">
+                        <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+                        MISIÓN: EL SETUP DEFINITIVO DE CHARLY
+                    </div>
+
+                    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white uppercase leading-none">
+                        Por qué necesito el <br>
+                        <span class="bg-gradient-to-r from-rm-red via-red-500 to-rm-cyan bg-clip-text text-transparent drop-shadow-lg">
+                            REDMAGIC 12
+                        </span>
+                    </h1>
+
+                    <p class="text-slate-300 text-base sm:text-lg leading-relaxed font-normal">
+                        No se trata solo de tener un teléfono "bonito"; esto es <strong class="text-white">ingeniería pura de alto rendimiento</strong>. Necesito una máquina capaz de mover los títulos más pesados del mercado, ejecutar add-ons pesados y shaders en Minecraft sin sufrir bajones de cuadros, y servir como mi supercomputadora portátil para emulación y audio profesional.
+                    </p>
+
+                    <!-- Games Grid Badges -->
+                    <div class="space-y-3">
+                        <span class="text-xs font-mono text-slate-400 uppercase tracking-widest block">Títulos Destinados a Destrozar:</span>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="bg-slate-900 border border-rm-red/30 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1.5 font-mono">
+                                <i data-lucide="gamepad-2" class="w-3.5 h-3.5 text-rm-red"></i> Neverness to Everness (NTE)
+                            </span>
+                            <span class="bg-slate-900 border border-rm-red/30 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1.5 font-mono">
+                                <i data-lucide="swords" class="w-3.5 h-3.5 text-rm-red"></i> War Robots
+                            </span>
+                            <span class="bg-slate-900 border border-rm-red/30 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1.5 font-mono">
+                                <i data-lucide="crosshair" class="w-3.5 h-3.5 text-rm-red"></i> MWT: Tank Battles
+                            </span>
+                            <span class="bg-slate-900 border border-rm-red/30 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1.5 font-mono">
+                                <i data-lucide="box" class="w-3.5 h-3.5 text-rm-red"></i> Minecraft + Shaders & Addons
+                            </span>
+                            <span class="bg-slate-900 border border-rm-red/30 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1.5 font-mono">
+                                <i data-lucide="target" class="w-3.5 h-3.5 text-rm-red"></i> PUBG Mobile Ultra 120 FPS
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex flex-wrap gap-4">
+                        <a href="#specs" class="clip-corner bg-rm-red hover:bg-red-600 text-white font-bold px-6 py-3 text-sm flex items-center gap-2 shadow-neon-red transition-all">
+                            <i data-lucide="cpu" class="w-4 h-4"></i>
+                            VER ESPECIFICACIONES DE INFARTO
+                        </a>
+                        <a href="#benchmark" class="clip-corner bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold px-6 py-3 text-sm flex items-center gap-2 transition-all">
+                            <i data-lucide="gauge" class="w-4 h-4 text-rm-cyan"></i>
+                            PROBAR BENCHMARK SIMULADO
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Phone Visual Graphic Representation -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div id="phoneMockup" class="rm-card clip-corner p-6 rounded-2xl w-full max-w-sm relative overflow-hidden text-center space-y-6">
+                        <!-- Holographic lines -->
+                        <div class="absolute inset-0 bg-gradient-to-b from-rm-red/10 via-transparent to-rm-cyan/10 pointer-events-none"></div>
+
+                        <div class="relative z-10 flex justify-between items-center border-b border-slate-800 pb-3">
+                            <span class="font-mono text-xs text-slate-400">REDMAGIC 12 PRO ULTRA</span>
+                            <span class="font-mono text-xs text-rm-neonGreen">READY // NO THROTTLING</span>
+                        </div>
+
+                        <!-- RGB Cooler Simulation Core -->
+                        <div class="relative my-8 flex justify-center items-center">
+                            <div class="w-40 h-40 rounded-full border-2 border-rm-red/50 flex items-center justify-center p-2 relative shadow-neon-red">
+                                <div id="fanGraphic" class="w-full h-full rounded-full border-4 border-dashed border-rm-red flex items-center justify-center fan-spinning">
+                                    <i data-lucide="fan" class="w-20 h-20 text-rm-red"></i>
+                                </div>
+                            </div>
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <span class="bg-black/80 font-mono text-xs text-rm-cyan px-2 py-1 rounded border border-rm-cyan/40">
+                                    22,000 RPM
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 text-left font-mono text-xs text-slate-300">
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">CHIPSET:</span>
+                                <span class="text-white font-bold">Snapdragon 8 Gen 5 Extreme</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">RAM:</span>
+                                <span class="text-white font-bold">24 GB LPDDR5X</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">DISPLAY:</span>
+                                <span class="text-white font-bold">OLED 165Hz (Cámara Bajo Pantalla)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-500">GATILLOS:</span>
+                                <span class="text-rm-red font-bold">Dual Haptic 520Hz</span>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
+                                <div id="powerBar" class="bg-gradient-to-r from-rm-red to-rm-cyan h-full w-[95%]"></div>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-500 mt-1 block">EFICIENCIA TÉRMICA OPTIMIZADA AL 98.4%</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CARACTERÍSTICAS TÉCNICAS / SPECS DESEADAS -->
+        <section id="specs" class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto space-y-2">
+                <h2 class="text-3xl font-extrabold text-white tracking-wider uppercase">
+                    ARQUITECTURA DEL <span class="text-rm-red">MONSTRUO</span>
+                </h2>
+                <p class="text-slate-400 font-mono text-sm">
+                    Especificaciones diseñadas sin restricciones para garantizar rendimiento continuo sin strutterings.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Spec 1: Cooling -->
+                <div class="rm-card clip-corner p-6 space-y-4">
+                    <div class="w-12 h-12 rounded-lg bg-rm-red/10 border border-rm-red/30 flex items-center justify-center text-rm-red">
+                        <i data-lucide="snowflake" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wide">Refrigeración Extrema ICE</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Ventilador turbofactor de 22,000 RPM integrado con luces RGB, cámara de vapor de grado aviación y capa de grafeno líquido. Cero <span class="text-rm-red font-mono">thermal throttling</span> incluso tras horas en juegos pesados.
+                    </p>
+                </div>
+
+                <!-- Spec 2: Processor -->
+                <div class="rm-card clip-corner p-6 space-y-4">
+                    <div class="w-12 h-12 rounded-lg bg-rm-cyan/10 border border-rm-cyan/30 flex items-center justify-center text-rm-cyan">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wide">Procesador de Última Gen</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Chipset Snapdragon de máxima categoría junto con memoria RAM LPDDR5X ultra-rápida y almacenamiento UFS 4.0. Cargas instantáneas de mapas y máxima velocidad de procesamiento multihilo.
+                    </p>
+                </div>
+
+                <!-- Spec 3: Screen -->
+                <div class="rm-card clip-corner p-6 space-y-4">
+                    <div class="w-12 h-12 rounded-lg bg-rm-neonGreen/10 border border-rm-neonGreen/30 flex items-center justify-center text-rm-neonGreen">
+                        <i data-lucide="monitor" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wide">Pantalla AMOLED 165Hz Completa</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Cero muescas ni agujeros en pantalla gracias a la cámara bajo el panel (UDC). Tasa de refresco de 120Hz/165Hz y respuesta táctil ultrasensible para reaccionar antes que nadie.
+                    </p>
+                </div>
+
+                <!-- Spec 4: Battery & Bypass -->
+                <div class="rm-card clip-corner p-6 space-y-4">
+                    <div class="w-12 h-12 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500">
+                        <i data-lucide="battery-charging" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wide">Bypass Charging & Batería</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Capacidad masiva para largas sesiones. Incluye sistema <span class="text-white font-mono">Bypass Charging</span> para alimentar la placa directamente desde el cargador sin calentar la batería mientras juego conectado.
+                    </p>
+                </div>
+
+                <!-- Spec 5: Triggers -->
+                <div class="rm-card clip-corner p-6 space-y-4">
+                    <div class="w-12 h-12 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                        <i data-lucide="gamepad" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wide">Gatillos Hápticos 520Hz</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Botones laterales táctiles integrados en el chasis con tasa de sondeo de 520Hz. Permiten disparar, apuntar o ejecutar habilidades en shooters sin necesidad de mandos externos molestos.
+                    </p>
+                </div>
+
+                <!-- Spec 6: OS & Modding -->
+                <div class="rm-card clip-corner p-6 space-y-4">
+                    <div class="w-12 h-12 rounded-lg bg-rm-red/10 border border-rm-red/30 flex items-center justify-center text-rm-red">
+                        <i data-lucide="terminal" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white uppercase tracking-wide">REDMAGIC OS & Console Mode</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Software optimizado para la gestión de GPU/CPU, grabación de clips, capas de superposición personalizadas y salida DP a monitor secundario para convertir el teléfono en consola de mesa.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CASO DE USO PERSONAL / POR QUÉ CHARLY LO QUIERE -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center bg-slate-900/40 p-8 rounded-2xl border border-rm-red/30">
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-2 text-rm-cyan font-mono text-xs">
+                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                    ARGUMENTOS Y CASO DE USO
+                </div>
+
+                <h2 class="text-3xl font-extrabold text-white uppercase tracking-wide">
+                    ¿Por qué Charly necesita <span class="text-rm-red">semejante máquina</span>?
+                </h2>
+
+                <div class="space-y-4 text-slate-300 text-sm leading-relaxed">
+                    <div class="p-4 bg-black/60 rounded-xl border border-slate-800 space-y-1">
+                        <h4 class="font-bold text-white flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4 text-rm-red"></i>
+                            Modding Extremo & Workstation de Bolsillo
+                        </h4>
+                        <p class="text-slate-400">
+                            No uso el teléfono solo para redes. Quiero conectarlo a pantallas externas, mapear teclado y ratón sin latencia y cargarlo de scripts, mods y proyectos sin que la memoria RAM sufra.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-black/60 rounded-xl border border-slate-800 space-y-1">
+                        <h4 class="font-bold text-white flex items-center gap-2">
+                            <i data-lucide="music" class="w-4 h-4 text-rm-cyan"></i>
+                            Audio Hi-Res, Synthesizers y SoundFonts
+                        </h4>
+                        <p class="text-slate-400">
+                            Para mover motores de sonido pesados, emuladores de sintetizadores en tiempo real, FluidSynth y SoundFonts complejos sin que haya desfase ni cortes de audio. El audio Bit-Perfect es indispensable.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-black/60 rounded-xl border border-slate-800 space-y-1">
+                        <h4 class="font-bold text-white flex items-center gap-2">
+                            <i data-lucide="play" class="w-4 h-4 text-rm-neonGreen"></i>
+                            Emulación y Futuro Gaming Aprobado
+                        </h4>
+                        <p class="text-slate-400">
+                            Tener la tranquilidad de que juegos exigentes de próxima generación como <span class="text-white font-semibold">Neverness to Everness (NTE)</span> correrán con los gráficos al máximo y tasas de refresco estables.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard HUD Mock Visual -->
+            <div class="rm-card p-6 clip-corner space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3 font-mono text-xs">
+                    <span class="text-rm-red font-bold">PERFORMANCE PROFILER</span>
+                    <span class="text-slate-500">CHARLY_SYSTEM_LOG</span>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs font-mono mb-1">
+                            <span class="text-slate-400">Rendimiento en NTE / High Graphics</span>
+                            <span class="text-rm-cyan">100% (Constante)</span>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-2">
+                            <div class="bg-rm-cyan h-2 rounded-full w-full"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-mono mb-1">
+                            <span class="text-slate-400">Minecraft + Shader Pack + Mods</span>
+                            <span class="text-rm-neonGreen">120 FPS Max</span>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-2">
+                            <div class="bg-rm-neonGreen h-2 rounded-full w-full"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-mono mb-1">
+                            <span class="text-slate-400">Respuesta de Latencia Audio SoundFonts</span>
+                            <span class="text-rm-red">&lt; 5ms (Bit-Perfect)</span>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-2">
+                            <div class="bg-rm-red h-2 rounded-full w-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-rm-red/10 border border-rm-red/30 rounded-xl text-xs font-mono text-slate-300">
+                    <i data-lucide="quote" class="w-4 h-4 text-rm-red mb-1"></i>
+                    "Comprar un gama media sería limitar mis proyectos. El REDMAGIC 12 es la única opción razonable para todo lo que ejecuto a diario."
+                </div>
+            </div>
+        </section>
+
+        <!-- BENCHMARK Y SIMULADOR INTERACTIVO -->
+        <section id="benchmark" class="rm-card clip-corner p-8 space-y-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white uppercase tracking-wider">
+                        SIMULADOR BENCHMARK <span class="text-rm-cyan">REDMAGIC HUD</span>
+                    </h2>
+                    <p class="text-slate-400 font-mono text-xs mt-1">
+                        Interactúa con los controles para simular la activación del enfriamiento y overclocking.
+                    </p>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button onclick="runBenchmarkTest()" class="bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs px-4 py-2 rounded border border-slate-700 flex items-center gap-2">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> REBOOT STRESS TEST
+                    </button>
+                </div>
+            </div>
+
+            <!-- Console Dashboard -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+                <div class="bg-black/60 p-4 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-slate-500 text-xs">FRECUENCIA CPU</span>
+                    <div id="benchCpu" class="text-xl font-bold text-white">3.80 GHz</div>
+                    <span class="text-[10px] text-rm-neonGreen">Octa-Core Ultra Active</span>
+                </div>
+
+                <div class="bg-black/60 p-4 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-slate-500 text-xs">VELOCIDAD VENTILADOR</span>
+                    <div id="benchFan" class="text-xl font-bold text-rm-red">15,000 RPM</div>
+                    <span id="benchFanStatus" class="text-[10px] text-slate-400">Nivel Normal</span>
+                </div>
+
+                <div class="bg-black/60 p-4 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-slate-500 text-xs">FPS ESTIMADOS (HEAVY SHADERS)</span>
+                    <div id="benchFps" class="text-xl font-bold text-rm-cyan">90 FPS</div>
+                    <span class="text-[10px] text-rm-cyan">Ultra Smooth</span>
+                </div>
+
+                <div class="bg-black/60 p-4 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-slate-500 text-xs">ESTADO TÉRMICO</span>
+                    <div id="benchTemp" class="text-xl font-bold text-rm-neonGreen">31 °C</div>
+                    <span class="text-[10px] text-rm-neonGreen">Optimizado sin estrangulamiento</span>
+                </div>
+            </div>
+
+            <!-- Interactivity Interactive Bar -->
+            <div class="p-6 bg-black/80 rounded-xl border border-rm-red/40 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="space-y-1 text-center sm:text-left">
+                    <h4 class="font-mono font-bold text-white text-sm">¿ACTIVAR MODO DIABLO / TURBO REDMAGIC?</h4>
+                    <p class="text-slate-400 text-xs">Aumenta los ventiladores al 100% e inyecta la máxima potencia a los núcleos GPU.</p>
+                </div>
+                
+                <button onclick="toggleTurboMode()" class="w-full sm:w-auto clip-corner bg-rm-red hover:bg-red-600 text-white font-mono font-bold text-sm px-6 py-3 shadow-neon-red transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="flame" class="w-4 h-4"></i>
+                    <span>FORZAR OVERCLOCK</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE VOTO DE APOYO / VOTE FORM -->
+        <section class="max-w-3xl mx-auto text-center space-y-6">
+            <div class="space-y-2">
+                <h2 class="text-3xl font-extrabold text-white uppercase tracking-wider">
+                    ¿DEBERÍA CHARLY COMPRAR EL <span class="text-rm-red">REDMAGIC 12</span>?
+                </h2>
+                <p class="text-slate-400 text-sm font-mono">
+                    Deja tu voto de apoyo o mensaje para confirmar que esta compra está más que justificada.
+                </p>
+            </div>
+
+            <!-- Counter Box -->
+            <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 inline-block px-12 space-y-1">
+                <span class="text-slate-400 font-mono text-xs block uppercase">Votos a favor acumulados</span>
+                <span id="voteCounter" class="text-4xl font-extrabold text-rm-red font-mono">1,482</span>
+            </div>
+
+            <!-- Form -->
+            <form id="voteForm" onsubmit="handleVote(event)" class="space-y-4 text-left max-w-md mx-auto">
+                <div>
+                    <label class="block text-xs font-mono text-slate-400 mb-1">TU NOMBRE / ALIAS GAMER</label>
+                    <input type="text" id="voterName" required placeholder="Ej. Pilot_01" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-rm-red font-mono">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-mono text-slate-400 mb-1">MENSAJE DE APOYO</label>
+                    <textarea id="voterComment" rows="3" required placeholder="¡Cómpralo ya Charly, esa máquina lo vale!" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-rm-red font-mono resize-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full clip-corner bg-rm-red hover:bg-red-600 text-white font-mono font-bold py-3.5 shadow-neon-red transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    <span>¡CONFIRMAR MI VOTO DE APOYO!</span>
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 border border-rm-red text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 translate-y-24 opacity-0 transition-all duration-300 font-mono text-xs">
+        <i data-lucide="bell" class="w-4 h-4 text-rm-red"></i>
+        <span id="toastText">Notificación del sistema</span>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-slate-900 py-6 mt-16 text-center font-mono text-xs text-slate-600">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p>PROJECT: REDMAGIC 12 // DISEÑADO Y CREADO PARA CHARLY</p>
+            <p class="text-[10px] text-slate-700">Estética inspirada en REDMAGIC Nubia Technology. Configuración y setup personalizado.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // State variables
+        let isTurboMode = false;
+        let voteCount = 1482;
+
+        // Toggle Turbo Mode Logic
+        function toggleTurboMode() {
+            isTurboMode = !isTurboMode;
+
+            const turboBtnText = document.getElementById('turboBtnText');
+            const fanGraphic = document.getElementById('fanGraphic');
+            const phoneMockup = document.getElementById('phoneMockup');
+
+            // HUD elements
+            const hudFps = document.getElementById('hudFps');
+            const hudTemp = document.getElementById('hudTemp');
+
+            // Benchmark elements
+            const benchCpu = document.getElementById('benchCpu');
+            const benchFan = document.getElementById('benchFan');
+            const benchFps = document.getElementById('benchFps');
+            const benchTemp = document.getElementById('benchTemp');
+            const benchFanStatus = document.getElementById('benchFanStatus');
+
+            if (isTurboMode) {
+                // UI Changes to Turbo Active
+                turboBtnText.textContent = "TURBO: ACTIVADO";
+                fanGraphic.classList.remove('fan-spinning');
+                fanGraphic.classList.add('fan-turbo');
+                phoneMockup.classList.add('rgb-mode-active');
+
+                // Specs update
+                hudFps.textContent = "165";
+                hudFps.className = "text-rm-red font-bold text-sm animate-pulse";
+                hudTemp.textContent = "22°C";
+
+                benchCpu.textContent = "4.32 GHz (OVERCLOCK)";
+                benchCpu.className = "text-xl font-bold text-rm-red";
+                benchFan.textContent = "22,000 RPM";
+                benchFanStatus.textContent = "MÁXIMA POTENCIA TURBO";
+                benchFanStatus.className = "text-[10px] text-rm-red font-bold";
+                benchFps.textContent = "165 FPS";
+                benchTemp.textContent = "21 °C";
+
+                showToast("¡MODO REDMAGIC TURBO ACTIVADO! RPM al 100%");
+            } else {
+                // UI Changes to Normal
+                turboBtnText.textContent = "MODO TURBO";
+                fanGraphic.classList.remove('fan-turbo');
+                fanGraphic.classList.add('fan-spinning');
+                phoneMockup.classList.remove('rgb-mode-active');
+
+                // Specs revert
+                hudFps.textContent = "120";
+                hudFps.className = "text-rm-cyan font-bold text-sm";
+                hudTemp.textContent = "28°C";
+
+                benchCpu.textContent = "3.80 GHz";
+                benchCpu.className = "text-xl font-bold text-white";
+                benchFan.textContent = "15,000 RPM";
+                benchFanStatus.textContent = "Nivel Normal";
+                benchFanStatus.className = "text-[10px] text-slate-400";
+                benchFps.textContent = "90 FPS";
+                benchTemp.textContent = "31 °C";
+
+                showToast("Modo Estándar de energía restablecido");
+            }
+        }
+
+        // Stress Test Simulation
+        function runBenchmarkTest() {
+            showToast("Ejecutando pruebas de estrés en la GPU...");
+            const benchFps = document.getElementById('benchFps');
+            let originalText = benchFps.textContent;
+
+            benchFps.textContent = "CALCULANDO...";
+
+            setTimeout(() => {
+                if (isTurboMode) {
+                    benchFps.textContent = "165 FPS (STABLE)";
+                } else {
+                    benchFps.textContent = "120 FPS (STABLE)";
+                }
+                showToast("Prueba completada: 0 cuadros perdidos.");
+            }, 1200);
+        }
+
+        // Handle Voting Form
+        function handleVote(e) {
+            e.preventDefault();
+            const voterName = document.getElementById('voterName').value;
+            
+            voteCount++;
+            document.getElementById('voteCounter').textContent = voteCount.toLocaleString();
+
+            showToast(`¡Gracias ${voterName}! Tu voto ha sido registrado.`);
+            document.getElementById('voteForm').reset();
+        }
+
+        // Notification Toast Helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toastText');
+
+            toastText.textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
